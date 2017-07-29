@@ -1,0 +1,28 @@
+Signature-Version: 1.0
+SHA1-Digest-Manifest: lkpHnygL1FUO9D42WLukU5LDRAo=
+Created-By: 1.0 (Android SignApk)
+
+Name: META-INF/com/google/android/updater-script
+SHA1-Digest: Br6xNsbYLFIighT+FGsY/cB14YM=
+
+Name: flo.tar.xz
+SHA1-Digest: VohA9XJVwl0UtNj7W6yTx4UhMMs=
+
+Name: module.prop
+SHA1-Digest: Xc7dW9oDPdLeZmezkR1I5ksomso=
+
+Name: hammerhead.tar.xz
+SHA1-Digest: ZFHaZacgXupX2BlZsyPqXSAB+vo=
+
+Name: META-INF/com/google/android/update-binary
+SHA1-Digest: z4ebUgY6qOEzBRifLUIYUjyaiho=
+
+Name: addon.d/90-media.sh
+SHA1-Digest: 1h3yq3Wo9WzH5TFXTd4O+vWnhqQ=
+
+Name: su.d/000mediamount
+SHA1-Digest: i1smFsSwe/DVO/LcAbwXDRyGIIw=
+
+Name: common.tar.xz
+SHA1-Digest: 2+3CEA8Ul+r8vyiPh9qD7lCAobI=
+

@@ -1,0 +1,8 @@
+#!/system/bin/sh
+# chmod -R 755 /su/su.d
+#
+# Systemless Media Replacement Mounts
+# osm0sis @ xda-developers
+
+mount -o bind /su/media /system/media;
+
