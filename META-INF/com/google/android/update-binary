@@ -159,6 +159,7 @@ elif [ "$magisk" ]; then
   touch $mnt/$modname/auto_mount;
   touch $target/media/audio/.replace;
   mv -f $target/media/bootanimation.zip $mnt/$modname/bootanimation.zip;
+  chcon -hR 'u:object_r:system_file:s0' "$mnt/$modname";
   mkdir -p /cache/magisk_mount/system/media;
   cp -rf $mnt/$modname/bootanimation.zip /cache/magisk_mount/system/media/;
   if $BOOTMODE; then
