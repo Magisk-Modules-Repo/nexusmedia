@@ -1,8 +1,10 @@
 #!/system/bin/sh
-# chmod -R 755 /su/su.d
+# chmod -R 755 /su/su.d /sbin/supersu/su.d
 #
 # Systemless Media Replacement Mounts
 # osm0sis @ xda-developers
 
-mount -o bind /su/media /system/media;
+sumnt=$(ls /su || ls /sbin/supersu) 2>/dev/null;
+
+mount -o bind $sumnt/media /system/media;
 

@@ -117,10 +117,15 @@ if [ "$suimg" ]; then
   esac;
   target=$mnt$magisk;
 else
-  mount -o rw,remount /system;
-  mount /system;
-  test -f /system/system/build.prop && root=/system;
-  target=$root/system;
+  mnt=$(dirname `find /data -name supersu_is_here | head -n1`);
+  if [ -e "$mnt" ]; then
+    target=$mnt;
+  else
+    mount -o rw,remount /system;
+    mount /system;
+    test -f /system/system/build.prop && root=/system;
+    target=$root/system;
+  fi;
 fi;
 
 ui_print " ";
