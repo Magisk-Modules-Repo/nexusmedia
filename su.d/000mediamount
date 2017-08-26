@@ -4,7 +4,7 @@
 # Systemless Media Replacement Mounts
 # osm0sis @ xda-developers
 
-sumnt=$(ls /su || ls /sbin/supersu) 2>/dev/null;
+sumnt=$(find / -maxdepth 2 | grep -E '^/su$|^/sbin/supersu$');
 
 mount -o bind $sumnt/media /system/media;
 
