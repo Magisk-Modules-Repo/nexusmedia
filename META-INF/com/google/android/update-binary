@@ -93,9 +93,15 @@ umount /system 2>/dev/null;
 mount -o ro -t auto /system;
 mount /data;
 mount /cache;
+
+# Magisk clean flash support
+if [ -e /data/magisk -a ! -e /data/magisk.img ]; then
+  /system/bin/make_ext4fs -l 64M /data/magisk.img;
+fi;
+
 # allow forcing a system installation regardless of su.img/magisk.img detection
 case $(basename "$ZIPFILE") in
-  *system*) ui_print " "; ui_print "Warning: Forcing a system installation!";;
+  *system*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
   *) suimg=$(ls /data/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/magisk.img || ls /cache/magisk.img) 2>/dev/null; mnt=$dev/$(basename $suimg .img);;
 esac;
 if [ "$suimg" ]; then
@@ -119,8 +125,9 @@ if [ "$suimg" ]; then
   esac;
   target=$mnt$magisk;
 else
+  # SuperSU BINDSBIN support
   mnt=$(dirname `find /data -name supersu_is_here | head -n1`);
-  if [ -e "$mnt" ]; then
+  if [ -e "$mnt" -a ! "$system" ]; then
     bindsbin=1;
     target=$mnt;
   else
@@ -174,7 +181,7 @@ elif [ "$magisk" ]; then
   chcon -hR 'u:object_r:system_file:s0' "$mnt/$modname";
   mkdir -p /cache/magisk_mount/system/media;
   cp -rf $mnt/$modname/bootanimation.zip /cache/magisk_mount/system/media/;
-  if $BOOTMODE; then
+  if $BOOTMODE && [ "$suimg" == "/data/magisk_merge.img" ]; then
     mkdir -p /magisk/$modname;
     touch /magisk/$modname/update;
     cp -f module.prop /magisk/$modname/;
