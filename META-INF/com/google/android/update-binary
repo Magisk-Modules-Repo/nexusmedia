@@ -148,8 +148,8 @@ unzip -o "$ZIPFILE";
 # work around Magisk Manager PATH issue leading to toybox's limited tar being used
 bb=$(which busybox 2>/dev/null);
 case $media in
-  hammerhead|flo) $bb tar -xJf common-5-7.tar.xz;
-  shamu|volantis) $bb tar -xJf common-6-9.tar.xz;
+  hammerhead|flo) $bb tar -xJf common-5-7.tar.xz;;
+  shamu|volantis) $bb tar -xJf common-6-9.tar.xz;;
 esac;
 $bb tar -xJf common.tar.xz;
 $bb tar -xJf $media.tar.xz;
