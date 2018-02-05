@@ -6,13 +6,14 @@ OUTFD=/proc/self/fd/$2;
 ZIPFILE="$3";
 
 # Magisk boot mode support
+test -e /data/adb/magisk && adb=adb;
 ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true || BOOTMODE=false;
 $BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMODE=true;
 if $BOOTMODE; then
   OUTFD=/proc/self/fd/0;
   dev=/dev;
-  if [ ! -f /data/magisk_merge.img ]; then
-    /system/bin/make_ext4fs -l 64M /data/magisk_merge.img > /dev/null;
+  if [ ! -f /data/$adb/magisk_merge.img ]; then
+    /system/bin/make_ext4fs -l 64M /data/$adb/magisk_merge.img > /dev/null;
   fi;
 fi;
 
@@ -97,14 +98,14 @@ mount /data;
 mount /cache;
 
 # Magisk clean flash support
-if [ -e /data/magisk -a ! -e /data/magisk.img ]; then
-  /system/bin/make_ext4fs -l 64M /data/magisk.img;
+if [ -e /data/$adb/magisk -a ! -e /data/$adb/magisk.img ]; then
+  /system/bin/make_ext4fs -l 64M /data/$adb/magisk.img;
 fi;
 
 # allow forcing a system installation regardless of su.img/magisk.img detection
 case $(basename "$ZIPFILE") in
   *system*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
-  *) suimg=$(ls /data/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/magisk.img || ls /cache/magisk.img) 2>/dev/null; mnt=$dev/$(basename $suimg .img);;
+  *) suimg=$(ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null; mnt=$dev/$(basename $suimg .img);;
 esac;
 if [ "$suimg" ]; then
   mount_su;
@@ -187,7 +188,7 @@ elif [ "$magisk" ]; then
   chcon -hR 'u:object_r:system_file:s0' "$mnt/$modname";
   mkdir -p /cache/magisk_mount/system/media;
   cp -rf $mnt/$modname/bootanimation.zip /cache/magisk_mount/system/media/;
-  if $BOOTMODE && [ "$suimg" == "/data/magisk_merge.img" ]; then
+  if $BOOTMODE && [ "$suimg" == "/data/$adb/magisk_merge.img" ]; then
     mkdir -p /magisk/$modname;
     touch /magisk/$modname/update;
     cp -f module.prop /magisk/$modname/;
