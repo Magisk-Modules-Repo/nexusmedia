@@ -1,13 +1,13 @@
 #!/system/bin/sh
-# chmod -R 755 /magisk/.core/service.d
+# chmod -R 755 /magisk/.core/service.d /sbin/.core/img/.core/service.d
 #
 # Systemless Media Post-Uninstall Cleanup
 # osm0sis @ xda-developers
 
-if [ ! -e /magisk/nexusmedia ]; then
+if [ ! -e /magisk/nexusmedia -a ! -e /sbin/.core/img/nexusmedia ]; then
   rm -f /cache/magisk_mount/system/media/bootanimation.zip;
   cd /cache;
   rmdir -p magisk_mount/system/media;
-  rm -f /magisk/.core/service.d/000mediacleanup;
+  rm -f /magisk/.core/service.d/000mediacleanup /sbin/.core/img/.core/service.d/000mediacleanup;
 fi;
 
