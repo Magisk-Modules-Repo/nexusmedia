@@ -185,8 +185,10 @@ elif [ "$magisk" ]; then
   touch $target/media/audio/.replace;
   mv -f $target/media/bootanimation.zip $mnt/$modname/bootanimation.zip;
   chcon -hR 'u:object_r:system_file:s0' "$mnt/$modname";
-  mkdir -p /cache/magisk_mount/system/media;
+  # no easy way to know which basic mount Magisk method works, so do both
+  mkdir -p /cache/magisk_mount/system/media /data/adb/magisk_simple/system/media;
   cp -rf $mnt/$modname/bootanimation.zip /cache/magisk_mount/system/media/;
+  cp -rf $mnt/$modname/bootanimation.zip /data/adb/magisk_simple/system/media/;
   if $BOOTMODE && [ "$suimg" == "/data/$adb/magisk_merge.img" ]; then
     test -e /magisk && imgmnt=/magisk || imgmnt=/sbin/.core/img;
     mkdir -p "$imgmnt/$modname";

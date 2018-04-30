@@ -5,9 +5,11 @@
 # osm0sis @ xda-developers
 
 if [ ! -e /magisk/nexusmedia -a ! -e /sbin/.core/img/nexusmedia ]; then
-  rm -f /cache/magisk_mount/system/media/bootanimation.zip;
+  rm -f /cache/magisk_mount/system/media/bootanimation.zip /data/adb/magisk_simple/system/media/bootanimation.zip;
   cd /cache;
   rmdir -p magisk_mount/system/media;
+  cd /data/adb;
+  rmdir -p magisk_simple/system/media;
   rm -f /magisk/.core/service.d/000mediacleanup /sbin/.core/img/.core/service.d/000mediacleanup;
 fi;
 
