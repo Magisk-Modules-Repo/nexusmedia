@@ -104,7 +104,7 @@ fi;
 
 # allow forcing a system installation regardless of su.img/magisk.img detection
 case $(basename "$ZIPFILE") in
-  *system*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
+  *system*|*System*|*SYSTEM*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
   *) suimg=$(ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null; mnt=$devtmp/$(basename $suimg .img);;
 esac;
 if [ "$suimg" ]; then
