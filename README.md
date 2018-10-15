@@ -16,3 +16,5 @@ Please read the [release post](https://forum.xda-developers.com/showpost.php?p=6
 
 ### Notes
 Magisk module version is populated at flash time by the chosen media's device name
+
+Since Magisk changed the timing of its simple early mounts, whether bootanimation works on your device depends on whether your device loads it before the post-fs-data stage of the boot process. Many devices work still, but many now do not.
