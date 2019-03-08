@@ -13,11 +13,12 @@ if $BOOTMODE; then
   OUTFD=/proc/self/fd/0;
   dev=/dev;
   devtmp=/dev/tmp;
-  if [ ! -f /data/$adb/magisk_merge.img ]; then
+  if [ ! -f /data/$adb/magisk_merge.img -a ! -e /data/adb/modules ]; then
     (/system/bin/make_ext4fs -b 4096 -l 64M /data/$adb/magisk_merge.img || /system/bin/mke2fs -b 4096 -t ext4 /data/$adb/magisk_merge.img 64M) >/dev/null;
   fi;
   test -e /magisk/.core/busybox && magiskbb=/magisk/.core/busybox;
   test -e /sbin/.core/busybox && magiskbb=/sbin/.core/busybox;
+  test -e /sbin/.magisk/busybox && magiskbb=/sbin/.magisk/busybox;
   test "$magiskbb" && export PATH="$magiskbb:$PATH";
 fi;
 
@@ -74,11 +75,11 @@ modname=nexusmedia;
 show_progress 1.34 2;
 
 # default to hammerhead if none specified
-media=hammerhead;
+media=bullhead;
 
 # override zip filename parsing with a settings file
-if [ -f /data/.nexusmedia ]; then
-  choice=$(cat /data/.nexusmedia);
+if [ -f /data/.$modname ]; then
+  choice=$(cat /data/.$modname);
 else
   choice=$(basename "$ZIPFILE");
 fi;
@@ -89,6 +90,8 @@ case $choice in
   *flo*|*deb*) media=flo;;
   *shamu*) media=shamu;;
   *volantis*) media=volantis;;
+  *bullhead*) media=bullhead;;
+  *angler*) media=angler;;
   *) ui_print "Warning: Invalid or no media choice found in filename, fallback to default!"; ui_print " ";;
 esac;
 ui_print "Using media directory: $media";
@@ -102,18 +105,18 @@ mount /cache;
 test -f /system/system/build.prop && root=/system;
 
 # Magisk clean flash support
-if [ -e /data/$adb/magisk -a ! -e /data/$adb/magisk.img ]; then
+if [ -e /data/$adb/magisk -a ! -e /data/$adb/magisk.img -a ! -e /data/adb/modules ]; then
   make_ext4fs -b 4096 -l 64M /data/$adb/magisk.img || mke2fs -b 4096 -t ext4 /data/$adb/magisk.img 64M;
 fi;
 
 # allow forcing a system installation regardless of su.img/magisk.img detection
 case $(basename "$ZIPFILE") in
   *system*|*System*|*SYSTEM*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
-  *) suimg=$(ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null; mnt=$devtmp/$(basename $suimg .img);;
+  *) suimg=$((ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null); mnt=$devtmp/$(basename $suimg .img);;
 esac;
 if [ "$suimg" ]; then
   mount_su;
-  if [ ! -e /su/su.d/000mediamount -a ! -e /magisk/nexusmedia/module.prop -a "$(which e2fsck)" ]; then
+  if [ ! -e /su/su.d/000mediamount -a ! -e /magisk/nexusmedia/module.prop -a ! -e /sbin/.core/img/nexusmedia/module.prop -a ! -e /sbin/.magisk/img/nexusmedia/module.prop -a "$(which e2fsck)" ]; then
     # make room for media which may not fit in su.img/magisk.img if there are other mods
     umount $mnt;
     payload_size_check "$ZIPFILE" "$media/*";
@@ -137,6 +140,10 @@ else
   if [ -e "$mnt" -a ! "$system" ]; then
     bindsbin=1;
     target=$mnt;
+  elif [ -e "/data/adb/modules" -a ! "$system" ]; then
+    mnt=/data/adb/modules_update;
+    magisk=/$modname/system;
+    target=$mnt$magisk;
   else
     mount -o rw,remount /system;
     mount /system;
@@ -149,11 +156,15 @@ ui_print "Extracting files...";
 mkdir -p $dev/tmp/$modname;
 cd $dev/tmp/$modname;
 unzip -o "$ZIPFILE";
-# work around Magisk Manager PATH issue leading to toybox's limited tar being used
+# work around old Magisk Manager PATH issue leading to toybox's limited tar being used
 bb=$(which busybox 2>/dev/null);
 case $media in
   hammerhead|flo) $bb tar -xJf common-5-7.tar.xz;;
-  shamu|volantis) $bb tar -xJf common-6-9.tar.xz;;
+  shamu|volantis) $bb tar -xJf common-6-9-5x-6p.tar.xz;;
+  bullhead|angler) $bb tar -xJf common-6-9-5x-6p.tar.xz; $bb tar -xJf common-5x-6p.tar.xz;;
+esac;
+case $media in
+  shamu|bullhead|angler) $bb tar -xJf common-6-5x-6p.tar.xz;;
 esac;
 $bb tar -xJf common.tar.xz;
 $bb tar -xJf $media.tar.xz;
@@ -182,9 +193,9 @@ elif [ "$magisk" ]; then
   sed -i "s/version=.*/version=${media}/g" module.prop;
   cp -f module.prop $mnt/$modname/;
   cp -f post-fs-data.sh $mnt/$modname/;
-  mkdir -p $mnt/.core/service.d;
-  cp -rf service.d/* $mnt/.core/service.d;
-  set_perm 0 0 755 $mnt/.core/service.d/000mediacleanup;
+  serviced=$((ls -d /sbin/.core/img/.core/service.d || ls -d /sbin/.magisk/img/.core/service.d || ls -d /data/adb/service.d) 2>/dev/null);
+  cp -rf service.d/* $serviced;
+  set_perm 0 0 755 $serviced/000mediacleanup;
   touch $mnt/$modname/auto_mount;
   touch $target/media/audio/.replace;
   mv -f $target/media/bootanimation.zip $mnt/$modname/bootanimation.zip;
@@ -204,8 +215,10 @@ elif [ "$magisk" ]; then
     mkdir -p $i/system/media;
     cp -rf $mnt/$modname/bootanimation.zip $i/system/media/;
   done;
-  if $BOOTMODE && [ "$suimg" == "/data/$adb/magisk_merge.img" ]; then
+  if $BOOTMODE; then
     test -e /magisk && imgmnt=/magisk || imgmnt=/sbin/.core/img;
+    test -e /sbin/.magisk/img && imgmnt=/sbin/.magisk/img;
+    test -e /data/adb/modules && imgmnt=/data/adb/modules;
     mkdir -p "$imgmnt/$modname";
     touch "$imgmnt/$modname/update";
     cp -f module.prop "$imgmnt/$modname/";
