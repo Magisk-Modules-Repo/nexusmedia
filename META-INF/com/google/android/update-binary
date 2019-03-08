@@ -112,7 +112,7 @@ fi;
 # allow forcing a system installation regardless of su.img/magisk.img detection
 case $(basename "$ZIPFILE") in
   *system*|*System*|*SYSTEM*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
-  *) suimg=$((ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null); mnt=$devtmp/$(basename $suimg .img);;
+  *) suimg=$( (ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null); mnt=$devtmp/$(basename $suimg .img);;
 esac;
 if [ "$suimg" ]; then
   mount_su;
@@ -193,7 +193,7 @@ elif [ "$magisk" ]; then
   sed -i "s/version=.*/version=${media}/g" module.prop;
   cp -f module.prop $mnt/$modname/;
   cp -f post-fs-data.sh $mnt/$modname/;
-  serviced=$((ls -d /sbin/.core/img/.core/service.d || ls -d /sbin/.magisk/img/.core/service.d || ls -d /data/adb/service.d) 2>/dev/null);
+  serviced=$( (ls -d /sbin/.core/img/.core/service.d || ls -d /sbin/.magisk/img/.core/service.d || ls -d /data/adb/service.d) 2>/dev/null);
   cp -rf service.d/* $serviced;
   set_perm 0 0 755 $serviced/000mediacleanup;
   touch $mnt/$modname/auto_mount;
