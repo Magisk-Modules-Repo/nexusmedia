@@ -193,29 +193,27 @@ elif [ "$magisk" ]; then
   ui_print "Installing Magisk configuration files ...";
   sed -i "s/version=.*/version=${media}/g" module.prop;
   cp -f module.prop $mnt/$modname/;
-  cp -f post-fs-data.sh $mnt/$modname/;
-  serviced=`(ls -d /sbin/.core/img/.core/service.d || ls -d /sbin/.magisk/img/.core/service.d || ls -d /data/adb/service.d) 2>/dev/null`;
-  cp -rf service.d/* $serviced;
-  set_perm 0 0 755 $serviced/000mediacleanup;
   touch $mnt/$modname/auto_mount;
   touch $target/media/audio/.replace;
-  mv -f $target/media/bootanimation.zip $mnt/$modname/bootanimation.zip;
-  chcon -hR 'u:object_r:system_file:s0' "$mnt/$modname";
-  # check Magisk version code to find which basic mount method to use, fallback to blanket
+  # check Magisk version code to find if basic mount is supported and which method to use
   vercode=$(file_getprop /data/$adb/magisk/util_functions.sh MAGISK_VER_CODE 2>/dev/null);
-  if [ "$vercode" ]; then
+  if [ "$vercode" -le 19001 ]; then
+    mv -f $target/media/bootanimation.zip $mnt/$modname/bootanimation.zip;
+    cp -f post-fs-data.sh $mnt/$modname/;
+    serviced=`(ls -d /sbin/.core/img/.core/service.d || ls -d /sbin/.magisk/img/.core/service.d || ls -d /data/adb/service.d) 2>/dev/null`;
+    cp -rf service.d/* $serviced;
+    set_perm 0 0 755 $serviced/000mediacleanup;
     if [ "$vercode" -lt 1640 ]; then
       basicmnt="/cache/magisk_mount";
     else
       basicmnt="/data/adb/magisk_simple";
     fi;
-  else
-    basicmnt="/cache/magisk_mount /data/adb/magisk_simple";
+    for i in $basicmnt; do
+      mkdir -p $i/system/media;
+      cp -rf $mnt/$modname/bootanimation.zip $i/system/media/;
+    done;
   fi;
-  for i in $basicmnt; do
-    mkdir -p $i/system/media;
-    cp -rf $mnt/$modname/bootanimation.zip $i/system/media/;
-  done;
+  chcon -hR 'u:object_r:system_file:s0' "$mnt/$modname";
   if $BOOTMODE; then
     test -e /magisk && imgmnt=/magisk || imgmnt=/sbin/.core/img;
     test -e /sbin/.magisk/img && imgmnt=/sbin/.magisk/img;
