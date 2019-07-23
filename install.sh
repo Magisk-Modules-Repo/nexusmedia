@@ -175,7 +175,6 @@ $bb tar -xJf $media.tar.xz;
 ui_print " ";
 if [ -d common -a -d "$media" ]; then
   ui_print "Installing to $target/media ...";
-  rm -rf $target/media;
   mkdir -p $target/media;
   cp -rf common/* $target/media/;
   cp -rf $media/* $target/media/;
