@@ -113,7 +113,7 @@ if [ -e /data/$adb/magisk -a ! -e /data/$adb/magisk.img -a ! -e /data/adb/module
 fi;
 
 # allow forcing a system installation regardless of su.img/magisk.img detection
-case $(basename "$ZIPFILE") in
+case $choice in
   *system*|*System*|*SYSTEM*) system=1; ui_print " "; ui_print "Warning: Forcing a system installation!";;
   *) suimg=`(ls /data/$adb/magisk_merge.img || ls /data/su.img || ls /cache/su.img || ls /data/$adb/magisk.img || ls /cache/magisk.img) 2>/dev/null`; mnt=$devtmp/$(basename $suimg .img);;
 esac;
@@ -148,8 +148,7 @@ else
     magisk=/$modname/system;
     target=$mnt$magisk;
   else
-    mount -o rw,remount /system;
-    mount /system;
+    mount -o rw,remount /system || mount /system || mount -o rw,remount / && sar=1;
     target=$root/system;
   fi;
 fi;
@@ -196,7 +195,10 @@ elif [ "$magisk" ]; then
   sed -i "s/version=.*/version=${media}/g" module.prop;
   cp -f module.prop $mnt/$modname/;
   touch $mnt/$modname/auto_mount;
-  touch $target/media/audio/.replace;
+  case $choice in
+    *noreplace*|*NoReplace*|*NOREPLACE*) ;;
+    *) touch $target/media/audio/.replace;;
+  esac;
   # check Magisk version code to find if basic mount is supported and which method to use
   vercode=$(file_getprop /data/$adb/magisk/util_functions.sh MAGISK_VER_CODE 2>/dev/null);
   if [ "$vercode" -le 19001 ]; then
@@ -235,6 +237,7 @@ ui_print " ";
 ui_print "Unmounting...";
 test "$suimg" && umount $mnt;
 test "$loop" && losetup -d $loop;
+test "$sar" && mount -o ro,remount /;
 umount /system;
 umount /data;
 umount /cache;
