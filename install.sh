@@ -158,18 +158,37 @@ ui_print "Extracting files...";
 mkdir -p $dev/tmp/$modname;
 cd $dev/tmp/$modname;
 unzip -o "$ZIPFILE";
-# work around old Magisk Manager PATH issue leading to toybox's limited tar being used
-bb=$(which busybox 2>/dev/null);
+# work around scenarios where toybox's limited tar would be used (old Magisk Manager PATH issue, TWRPs without busybox)
+abi=`file_getprop $root/system/build.prop ro.product.cpu.abi`;
+case $abi in
+  arm*|x86*|mips*) ;;
+  *) abi=`getprop ro.product.cpu.abi`;;
+esac;
+case $abi in
+  arm*|x86*|mips*) ;;
+  *) abi=`file_getprop /default.prop ro.product.cpu.abi`;;
+esac;
+case $abi in
+  arm64*) arch=arm64;;
+  arm*) arch=arm;;
+  x86_64*) arch=x86_64;;
+  x86*) arch=x86;;
+  mips64*) arch=mips64;;
+  mips*) arch=mips;;
+  *) ui_print "Unknown architecture: $abi"; arch=arm;;
+esac;
+tar -xzf xz.tar.gz $arch/xz;
+set_perm 0 0 755 $arch/xz;
 case $media in
-  hammerhead|flo) $bb tar -xJf common-5-7.tar.xz;;
-  shamu|volantis) $bb tar -xJf common-6-9-5x-6p.tar.xz;;
-  bullhead|angler) $bb tar -xJf common-6-9-5x-6p.tar.xz; $bb tar -xJf common-5x-6p.tar.xz;;
+  hammerhead|flo) $arch/xz -dc common-5-7.tar.xz | tar -x;;
+  shamu|volantis) $arch/xz -dc common-6-9-5x-6p.tar.xz | tar -x;;
+  bullhead|angler) $arch/xz -dc common-6-9-5x-6p.tar.xz | tar -x; $arch/xz -dc common-5x-6p.tar.xz | tar -x;;
 esac;
 case $media in
-  shamu|bullhead|angler) $bb tar -xJf common-6-5x-6p.tar.xz;;
+  shamu|bullhead|angler) $arch/xz -dc common-6-5x-6p.tar.xz | tar -x;;
 esac;
-$bb tar -xJf common.tar.xz;
-$bb tar -xJf $media.tar.xz;
+$arch/xz -dc common.tar.xz | tar -x;
+$arch/xz -dc $media.tar.xz | tar -x;
 
 ui_print " ";
 if [ -d common -a -d "$media" ]; then
@@ -196,8 +215,8 @@ elif [ "$magisk" ]; then
   cp -f module.prop $mnt/$modname/;
   touch $mnt/$modname/auto_mount;
   case $choice in
-    *noreplace*|*NoReplace*|*NOREPLACE*) ;;
-    *) touch $target/media/audio/.replace;;
+    *noreplace*|*NoReplace*|*NOREPLACE*) touch $target/media/audio/.noreplace;;
+    *) touch $target/media/audio/.replace; rm -f $target/media/audio/.noreplace;;
   esac;
   # check Magisk version code to find if basic mount is supported and which method to use
   vercode=$(file_getprop /data/$adb/magisk/util_functions.sh MAGISK_VER_CODE 2>/dev/null);
