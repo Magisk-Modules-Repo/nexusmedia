@@ -6,5 +6,9 @@
 
 sumnt=$(find / -maxdepth 2 | grep -E '^/su$|^/sbin/supersu$');
 
-mount -o bind $sumnt/media /system/media;
+if [ -e /system/product/media ]; then
+  mount -o bind $sumnt/media /system/product/media;
+else
+  mount -o bind $sumnt/media /system/media;
+fi;
 

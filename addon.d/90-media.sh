@@ -23,27 +23,20 @@ else
   return 1
 fi
 
-# Only constant files known
-list_files() {
-cat <<EOF
-media/bootanimation.zip
-EOF
-}
+if [ -e /system/product/media ]; then
+  media=product/media
+else
+  media=media
+fi
 
 case "$1" in
   backup)
-    list_files | while read FILE DUMMY; do
-      backup_file $S/"$FILE"
-    done
-    # Backup custom system sounds manually since files can differ across devices
-    cp -rpf $S/media/audio $C/$S/media/audio
+    # Backup custom media manually since files/locations can differ across devices
+    cp -rpf $S/$media/bootanimation.zip $C/$S/$media/bootanimation.zip
+    cp -rpf $S/$media/audio $C/$S/$media/audio
   ;;
   restore)
-    list_files | while read FILE REPLACEMENT; do
-      R=""
-      [ -n "$REPLACEMENT" ] && R="$S/$REPLACEMENT"
-      [ -f "$C/$S/$FILE" ] && restore_file $S/"$FILE" "$R"
-    done
+    # Stub
   ;;
   pre-backup)
     # Stub
@@ -56,10 +49,11 @@ case "$1" in
   post-restore)
     $backuptool_ab && P=/postinstall
 
-    # Wipe ROM system sounds then restore custom
-    test -f $C/$S/media/audio/.noreplace || rm -rf $P/$S/media/audio
-    cp -rpf $C/$S/media/audio $P/$S/media/
-    rm -rf $C/$S/media/audio
+    # Wipe ROM system media then restore custom
+    test -f $C/$S/$media/audio/.noreplace || rm -rf $P/$S/$media/audio
+    cp -rpf $C/$S/$media/audio $P/$S/$media/
+    cp -rpf $C/$S/$media/bootanimation.zip $P/$S/$media/bootanimation.zip
+    rm -rf $C/$S/$media/audio $C/$S/$media/bootanimation.zip
   ;;
 esac
 
