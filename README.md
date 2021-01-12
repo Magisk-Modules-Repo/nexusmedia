@@ -6,7 +6,7 @@
 * [GitHub](https://github.com/Magisk-Modules-Repo/Nexus-Media-Installer)
 * [Support](https://forum.xda-developers.com/showthread.php?t=2239421)
 * [Sponsor](https://github.com/sponsors/osm0sis)
-* [Donate](https://forum.xda-developers.com/donatetome.php?u=4544860)
+* [Donate](https://www.paypal.me/osm0sis)
 
 ### Description
 Custom ROMs often don't include the Google ringtones/notifications/system sounds and bootanimation, instead including numerous, terrible sounds and often less-than-desirable visuals. This zip installs the Nexus media for recently-retired Nexus devices, using the zip name (also reading from /data/.nexusmedia) to allow user choice, systemlessly installed (SuperSU and Magisk supported) or with an addon.d script to survive a ROM update or dirty flash.
