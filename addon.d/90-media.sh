@@ -50,7 +50,7 @@ case "$1" in
     $backuptool_ab && P=/postinstall
 
     # Wipe ROM system media then restore custom
-    test -f $C/$S/$media/audio/.noreplace || rm -rf $P/$S/$media/audio
+    [ -f $C/$S/$media/audio/.noreplace ] || rm -rf $P/$S/$media/audio
     cp -rpf $C/$S/$media/audio $P/$S/$media/
     cp -rpf $C/$S/$media/bootanimation.zip $P/$S/$media/bootanimation.zip
     rm -rf $C/$S/$media/audio $C/$S/$media/bootanimation.zip
