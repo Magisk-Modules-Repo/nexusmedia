@@ -23,7 +23,7 @@ else
   return 1
 fi
 
-if [ -e /system/product/media ]; then
+if [ -e $S/product/media ]; then
   media=product/media
 else
   media=media
@@ -32,8 +32,9 @@ fi
 case "$1" in
   backup)
     # Backup custom media manually since files/locations can differ across devices
-    cp -rpf $S/$media/bootanimation.zip $C/$S/$media/bootanimation.zip
+    mkdir -p $C/$S/$media
     cp -rpf $S/$media/audio $C/$S/$media/audio
+    cp -rpf $S/$media/bootanimation.zip $C/$S/$media/bootanimation.zip
   ;;
   restore)
     # Stub
@@ -45,12 +46,14 @@ case "$1" in
     # Stub
   ;;
   pre-restore)
+    # Stub
   ;;
   post-restore)
     $backuptool_ab && P=/postinstall
 
     # Wipe ROM system media then restore custom
     [ -f $C/$S/$media/audio/.noreplace ] || rm -rf $P/$S/$media/audio
+    mkdir -p $P/$S/$media
     cp -rpf $C/$S/$media/audio $P/$S/$media/
     cp -rpf $C/$S/$media/bootanimation.zip $P/$S/$media/bootanimation.zip
     rm -rf $C/$S/$media/audio $C/$S/$media/bootanimation.zip
