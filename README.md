@@ -1,21 +1,17 @@
-# Nexus Media
+## Nexus Media
 ### osm0sis @ xda-developers
-*Replace ROM ringtones/notification/system sounds and bootanimation with those from the recently-retired Nexus devices (chosen at flash-time)*
+*Replace ROM ringtones/notification/system sounds and bootanimation with those from old Nexus devices (chosen at flash-time)*
 
 ### Links
 * [GitHub](https://github.com/Magisk-Modules-Repo/Nexus-Media-Installer)
-* [Support](https://forum.xda-developers.com/showthread.php?t=2239421)
+* [Support](https://bit.do/osm0)
 * [Sponsor](https://github.com/sponsors/osm0sis)
 * [Donate](https://www.paypal.me/osm0sis)
 
 ### Description
-Custom ROMs often don't include the Google ringtones/notifications/system sounds and bootanimation, instead including numerous, terrible sounds and often less-than-desirable visuals. This zip installs the Nexus media for recently-retired Nexus devices, using the zip name (also reading from /data/.nexusmedia) to allow user choice, systemlessly installed (SuperSU and Magisk supported) or with an addon.d script to survive a ROM update or dirty flash.
+Custom ROMs usually don't include Google system media, instead including numerous less-than-desirable sounds/visuals. This installs media from old Nexus devices systemlessly (SuperSU and Magisk support), or to system with an addon.d script to survive a ROM update or dirty flash.
 
-Contains hammerhead, flo/deb, shamu, volantis/volantisg, bullhead and angler media, reading the zip filename for "hammerhead", "flo" or "deb", "shamu", "volantis", "volantisg", "bullhead" or "angler" to choose (defaulting to bullhead).
-
-Please read the [release post](https://forum.xda-developers.com/showpost.php?p=69978402&postcount=1021) for further information about zip renaming and special features.
+Contains hammerhead, flo/deb, shamu, volantis/g, bullhead and angler media. Please read the [release post](https://bit.do/nexmed) for more info about bootanimation support, media choice, zip renaming options and special features.
 
 ### Notes
 Magisk module version is populated at flash time by the chosen media's device name
-
-Since Magisk changed the timing of its simple early mounts, whether bootanimation works on your device depends on whether your device loads it before the post-fs-data stage of the boot process. Many devices work still, but many now do not.

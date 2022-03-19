@@ -1,9 +1,10 @@
 id=nexusmedia
 name=Nexus Media
 version=#device#
-versionCode=38
+versionCode=39
 author=osm0sis @ xda-developers
-description=Replace ROM ringtones/notification/system sounds and bootanimation with those from the recently-retired Nexus devices (chosen at flash-time)
-support=https://forum.xda-developers.com/showthread.php?t=2239421
+description=Replace ROM ringtones/notification/system sounds and bootanimation with those from old Nexus devices (chosen at flash-time)
+updateJson=https://raw.githubusercontent.com/Magisk-Modules-Repo/nexusmedia/master/update.json
+support=https://forum.xda-developers.com/t/tools-zips-scripts-osm0sis-odds-and-ends-multiple-devices-platforms.2239421
 donate=https://www.paypal.me/osm0sis
 template=1500
