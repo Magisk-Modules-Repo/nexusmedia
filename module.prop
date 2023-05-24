@@ -1,7 +1,7 @@
 id=nexusmedia
 name=Nexus Media
 version=#device#
-versionCode=40
+versionCode=41
 author=osm0sis @ xda-developers
 description=Replace ROM ringtones/notification/system sounds and bootanimation with those from old Nexus devices (chosen at flash-time)
 updateJson=https://raw.githubusercontent.com/Magisk-Modules-Repo/nexusmedia/master/update.json
