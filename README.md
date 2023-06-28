@@ -1,17 +1,16 @@
 ## Nexus Media
 ### osm0sis @ xda-developers
-*Replace ROM ringtones/notification/system sounds and bootanimation with those from old Nexus devices (chosen at flash-time)*
+*Replace ROM ringtone/notification/system sounds and bootanimation with those from Nexus devices*
 
 ### Links
-* [GitHub](https://github.com/Magisk-Modules-Repo/Nexus-Media-Installer)
-* [Support](https://bit.do/osm0)
+* [GitHub](https://github.com/Magisk-Modules-Repo/nexusmedia)
+* [Support](https://is.gd/osm0_)
 * [Sponsor](https://github.com/sponsors/osm0sis)
 * [Donate](https://www.paypal.me/osm0sis)
 
 ### Description
-Custom ROMs usually don't include Google system media, instead including numerous less-than-desirable sounds/visuals. This installs media from old Nexus devices systemlessly (SuperSU and Magisk support), or to system with an addon.d script to survive a ROM update or dirty flash.
+Custom ROMs usually don't include Google system media, and instead use many less-than-desirable sounds/visuals. This installs media from Nexus devices systemlessly (via SuperSU/Magisk), or to system with an addon.d script for ROM updates/flashes.
 
-Contains hammerhead, flo/deb, shamu, volantis/g, bullhead and angler media. Please read the [release post](https://bit.do/nexmed) for more info about bootanimation support, media choice, zip renaming options and special features.
+Contains Nexus 5, 5X, 6, 6P, 7 (2013) and 9 media. Please read the [release post](https://forum.xda-developers.com/t/tools-zips-scripts-osm0sis-odds-and-ends-multiple-devices-platforms.2239421/post-69978402) for info re: bootanimation support, media choice, zip renaming options and special features.
 
-### Notes
-Magisk module version is populated at flash time by the chosen media's device name
+*Note:* Magisk module version is populated at flash time by the chosen media's device name
