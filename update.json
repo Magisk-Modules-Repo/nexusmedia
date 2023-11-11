@@ -1,6 +1,6 @@
 {
     "version": "#device#",
     "versionCode": "42",
-    "zipUrl": "https://forum.xda-developers.com/attachments/update-nexus-media-installer-signed-zip.5919659/",
+    "zipUrl": "https://xdaforums.com/attachments/update-nexus-media-installer-signed-zip.5919659/",
     "changelog": "https://raw.githubusercontent.com/Magisk-Modules-Repo/nexusmedia/master/README.md"
 }
